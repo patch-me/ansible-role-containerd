@@ -1,0 +1,56 @@
+---
+# tasks file for containerd
+- name: Update facts
+  ansible.builtin.setup:
+
+- name: Install Docker for Debian family
+  when:
+    - ansible_os_family == "Arch Linux"
+  block:
+    - name: Install kubeadm kubelet
+      community.general.pacman:
+        name:
+          - kubectl
+          - k9s
+          - helm
+        state: present
+    - name: Install kubeadm kubelet
+      community.general.pacman:
+        name:
+          - kubeadm
+          - kubelet
+        state: present
+    - name: Install paru on Arch Linux
+      block:
+        - name: Ensure base-devel is installed
+          community.general.pacman:
+            name: base-devel
+            state: present
+            update_cache: true
+
+        - name: Clone the paru AUR repository
+          ansible.builtin.git:
+            repo: "https://aur.archlinux.org/paru.git"
+            dest: /tmp/paru
+            clone: true
+            update: false
+            version: main
+
+        - name: Build and install paru
+          ansible.builtin.command: "makepkg -si --noconfirm"
+          args:
+            chdir: /tmp/paru
+          register: paru_install
+          changed_when: "'nothing to do' not in paru_install.stdout"
+
+        - name: Clean up paru source directory
+          ansible.builtin.file:
+            path: /tmp/paru
+            state: absent
+          when: paru_install is succeeded
+    # - name: Install package from AUR using a Pacman compatible AUR helper
+    #   community.general.pacman:
+    #     name: paru
+    #     state: present
+    #     executable: paru
+    #     extra_args: --builddir /var/cache/paru
