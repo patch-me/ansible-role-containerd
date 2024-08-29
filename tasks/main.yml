@@ -1,0 +1,14 @@
+---
+# tasks file for containerd
+- name: Update facts
+  ansible.builtin.setup:
+
+- name: Install docker for debian family
+  when:
+    - ansible_os_family == "debian"
+  ansible.builtin.include_tasks: debian.yml
+
+- name: Install docker for debian family
+  when:
+    - ansible_os_family == "Arch Linux"
+  ansible.builtin.include_tasks: arch.yml
