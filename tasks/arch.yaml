@@ -3,17 +3,10 @@
 - name: Update facts
   ansible.builtin.setup:
 
-- name: Install kubeadm kubelet
+- name: Install containerd
   community.general.pacman:
     name:
-      - kubectl
-      - k9s
-      - helm
-    state: present
-- name: Install kubeadm kubelet
-  community.general.pacman:
-    name:
-      - kubeadm
+      - containerd
       - kubelet
     state: present
 - name: Install paru on Arch Linux

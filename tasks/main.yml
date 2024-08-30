@@ -12,3 +12,6 @@
   when:
     - ansible_os_family == "Arch Linux"
   ansible.builtin.include_tasks: arch.yml
+
+- name: Systemctl config
+  ansible.builtin.include_tasks: systemd.yml
