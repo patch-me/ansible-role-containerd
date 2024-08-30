@@ -1,0 +1,10 @@
+---
+# tasks file for containerd
+- name: Update facts
+  ansible.builtin.setup:
+
+- name: Install containerd
+  community.general.pacman:
+    name:
+      - containerd
+    state: present
